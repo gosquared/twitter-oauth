@@ -1,11 +1,59 @@
+#About:
+
+A simple API to work with twitters new (1.1) API. through oAuth with Express.js and Node.js.
+
+
+Requests are cached in Redis for 60 seconds  to avoid rate limits. If
+
+
 ##Installation:
 
+npm install twitter-oauth
+
+
+##Setup
+
+You will need to ensure the following values are set correctly:
+
+```
+var twitterAuth = require('twitter-oauth')({
+        consumerKey: "ENTER CONSUMER KEY HERE", /* per appication - create a comsumer key here: https://dev.twitter.com/apps */
+     consumerSecret: "ENTER CONSUMER SECRET FROM TWITTER HERE", /* create a comsumer key here: https://dev.twitter.com/apps */
+      loginCallback: "http://yourdomain.com/twitter/sessions/callback",  /* internal */
+   completeCallback:  "http://yourdomain.com/search/beagles"  /* When oauth has finished - where should we take the user too */
+});
+```
+
+
+If a redis port and host are provided then each request will be cached for 60 seconds.
+
+###Routes:
+
+You will need to set up the routes:
+
+```
+app.get('/twitter/sessions/connect', twitterAuth.oauthConnect);
+app.get('/twitter/sessions/callback', twitterAuth.oauthCallback);
+app.get('/twitter/sessions/logout', twitterAuth.logout);
+```
+
+
+Then you can call the service like so:
+
+```
+  twitterAuth.search(req.params.term.split('|'), function(error, data) {
+    res.json(data);
+  }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
+```
 
 
 ##Queries:
 
 
+See the search example to see all the possible searches.
 
-##Constraints
 
+##TODO
 
+1. Add middleware
+2. Expose redis functionality securely

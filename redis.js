@@ -1,4 +1,9 @@
 
+/*
+
+Small redis wrapper, not really needed anymore.
+ */
+
 module.exports = function(host, port) {
   var redis = require('redis');
   var self = this;
