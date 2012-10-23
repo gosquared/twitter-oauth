@@ -15,7 +15,7 @@ var config = {
 };
 
 var express = require('express');
-twitterAuth = require('../app.js')(config);
+twitterAuth = require('../server.js')(config);
 
 
 var app = express.createServer();
@@ -39,12 +39,13 @@ app.get('/search/:term', function(req, res){
 });
 
 app.get('/mentions', function(req, res){
-  twitterAuth.mentions(function(error, data) {
+  twitterAuth.retweets(function(error, data) {
     res.json(data);
   }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
 });
 
 app.get('/user/:handle', function(req, res){
+  console.log(req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
   twitterAuth.user(req.params.handle, function(error, data) {
     res.json({
       error: error,

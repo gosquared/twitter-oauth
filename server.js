@@ -16,7 +16,6 @@ module.exports = function(options) {
     var datastore = require('./redis.js')(options.redis.host, options.redis.port);
   }
   self.cacheDuration = 60; // 60 secs default cache.
-  console.log(options.domain + options.loginCallback);
   self.consumer = new oauth.OAuth(
     "https://twitter.com/oauth/request_token",
     "https://twitter.com/oauth/access_token",
@@ -92,15 +91,21 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
    * @param  {Function} callback         Called with the mentions. (error, data)
    * @param  {String}   oauthToken       oauth token provided by twitter.
    * @param  {String}   oauthTokenSecret oauth secret provided by twitter.
+   * @param  {String}   sinceId only get tweets after this retweet.
    */
-  self.retweets = function(callback, oauthToken, oauthTokenSecret) {
+  self.retweets = function(callback, oauthToken, oauthTokenSecret, sinceId) {
+
+    console.log(oauthToken, oauthTokenSecret);
     var processData = function(error, data, limit) {
       callback(error, {
         limit: limit,
         tweets: data
       });
     };
-    self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json', processData, oauthToken, oauthTokenSecret);
+
+    var q = (sinceId) ? '?since_id='+sinceId : '';
+    console.log('Q IS', q);
+    self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q, processData, oauthToken, oauthTokenSecret);
   };
 
   /**
