@@ -40,8 +40,10 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       if(response && response.headers) {
         // this info should get sent back with each request.
         var limit = response.headers['x-rate-limit-remaining'];
+        console.log('LIMIT: ', response.headers['x-rate-limit-remaining']);
         if(limit === "0") {  //rate limit has not been reached.
           callback({limitReached: true, auth: data}, null);
+          return;
         }
       }
       if (error) {
@@ -64,7 +66,7 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
         }
       } catch(error) {
         // leaving this in  so we can keep an eye of invalid json being returned.
-        console.log('ERROR', error, data);
+        console.log('ERROR', error);
       }
     });
   };
@@ -94,8 +96,6 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
    * @param  {String}   sinceId only get tweets after this retweet.
    */
   self.retweets = function(callback, oauthToken, oauthTokenSecret, sinceId) {
-
-    console.log(oauthToken, oauthTokenSecret);
     var processData = function(error, data, limit) {
       callback(error, {
         limit: limit,
@@ -103,9 +103,9 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       });
     };
 
-    var q = (sinceId) ? '?since_id='+sinceId : '';
-    console.log('Q IS', q);
-    self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q, processData, oauthToken, oauthTokenSecret);
+    var q = (sinceId && sinceId!='false') ? '?since_id='+sinceId : '';
+    console.log('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q);
+    self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q, callback, oauthToken, oauthTokenSecret);
   };
 
   /**

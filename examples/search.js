@@ -39,18 +39,18 @@ app.get('/search/:term', function(req, res){
 });
 
 app.get('/mentions', function(req, res){
-  twitterAuth.retweets(function(error, data) {
+twitterAuth.retweets(function(error, data) {
     res.json(data);
   }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
 });
 
-app.get('/user/:handle', function(req, res){
-  console.log(req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
-  twitterAuth.user(req.params.handle, function(error, data) {
+app.get('/user/:handle', function(req, res){  twitterAuth.user(req.params.handle, function(error, data) {
     res.json({
       error: error,
       data: data
     });
+
+
   }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
 });
 
