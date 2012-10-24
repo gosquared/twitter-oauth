@@ -40,7 +40,6 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       if(response && response.headers) {
         // this info should get sent back with each request.
         var limit = response.headers['x-rate-limit-remaining'];
-        console.log('LIMIT: ', response.headers['x-rate-limit-remaining']);
         if(limit === "0") {  //rate limit has not been reached.
           callback({limitReached: true, auth: data}, null);
           return;
