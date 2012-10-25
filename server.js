@@ -186,7 +186,8 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
     }
     self.consumer.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
       if (error) {
-        res.send("Error getting OAuth request token : " + error, 500);
+        res.send("Error getting OAuth request token : ", 500);
+        console.log('oAuth error: '+ error);
       } else {
         req.session.oauthRequestToken = oauthToken; // we will need these values in the oauthCallback so store them on the session.
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
@@ -198,7 +199,8 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
   self.oauthCallback = function(req, res, next) {
     self.consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
       if (error) {
-        res.send("Error getting OAuth access token (part 2): " + JSON.stringify(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]", 500);
+        res.send("Access Denied." , 500);
+        console.log('oAuth Error: step2: ' + JSON.stringify(error) + "["+oauthAccessToken+"]"+ "["+oauthAccessTokenSecret+"]");
       } else {
         req.session.oauthAccessToken = oauthAccessToken; // ensure we are clearing the session variables.
         req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
