@@ -188,9 +188,13 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       if (error) {
         res.send("Error getting OAuth request token : ", 500);
         console.log('oAuth error: '+ error);
-      } else {
+      } else {  
         req.session.oauthRequestToken = oauthToken; // we will need these values in the oauthCallback so store them on the session.
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
+
+        if(options.connectCallback) {
+          options.connectCallback(req, res, next);
+        }
         res.redirect("https://twitter.com/oauth/authorize?oauth_token="+req.session.oauthRequestToken);
       }
     });
@@ -204,13 +208,10 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       } else {
         req.session.oauthAccessToken = oauthAccessToken; // ensure we are clearing the session variables.
         req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
-        if(req.session.originalUrl) {
-          // go  store the auth token and secret, dashboard should them redirect back to the origin place.
-          if(options.storeToken) {
-            res.redirect(options.storeToken + 'token='+oauthAccessToken+ '&secret='+oauthAccessTokenSecret+'&url='+encodeURIComponent(req.session.originalUrl));
-          }else {
-            res.redirect(options.completeCallback);
-          }
+        if(options.oauthCallbackCallback) {
+          options.oauthCallbackCallback(req, res, next, results.screen_name, oauthAccessToken, oauthAccessTokenSecret);
+        }else { 
+          res.redirect(options.completeCallback);
         }
       }
     });
