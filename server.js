@@ -1,4 +1,5 @@
-  var oauth = require('oauth');
+var oauth = require('oauth');
+var request = require('request');
 
 
   // main manager function
@@ -101,9 +102,7 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
         tweets: data
       });
     };
-
     var q = (sinceId && sinceId!='false') ? '?since_id='+sinceId : '';
-    console.log('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q);
     self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q, callback, oauthToken, oauthTokenSecret);
   };
 
@@ -123,8 +122,29 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
         user: data
       });
     };
-    self.fetch('https://api.twitter.com/1.1/users/lookup.json?screen_name='+handle, processData, oauthToken, oauthTokenSecret);
+    self.fetch('https://api.twitter.com/1.1/users/lookup.json', processData, oauthToken, oauthTokenSecret);
   };
+
+
+  /**
+   * Returns info about the user specified by the handle.
+   *
+   * docs: https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
+   *
+   * @param  {Function} callback         Called with the mentions. (error, data)
+   * @param  {String}   oauthToken       oauth token provided by twitter.
+   * @param  {String}   oauthTokenSecret oauth secret provided by twitter.
+   */
+  self.verify = function(callback, oauthToken, oauthTokenSecret) {
+    var processData = function(error, data, limit) {
+      callback(error, {
+        limit: limit,
+        user: data
+      });
+    };
+    self.fetch('https://api.twitter.com/1.1/account/verify_credentials.json', processData, oauthToken, oauthTokenSecret);
+  };
+
 
 
   /**
@@ -168,6 +188,14 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
     self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURI(term)+'', processData, oauthToken, oauthTokenSecret);
   };
 
+
+
+  /*
+    Search with no auth.
+   */
+  self.freeSearch = function(search, callback) {
+    request('http://search.twitter.com/search.json?q='+search, callback);
+  };
   // oauth routes.
   //
   // Come on - you know this one.
@@ -188,7 +216,8 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       if (error) {
         res.send("Error getting OAuth request token : ", 500);
         console.log('oAuth error: '+ error);
-      } else {  
+      } else {
+        console.log(oauthToken);
         req.session.oauthRequestToken = oauthToken; // we will need these values in the oauthCallback so store them on the session.
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
 
@@ -210,7 +239,7 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
         req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
         if(options.oauthCallbackCallback) {
           options.oauthCallbackCallback(req, res, next, results.screen_name, oauthAccessToken, oauthAccessTokenSecret);
-        }else { 
+        }else {
           res.redirect(options.completeCallback);
         }
       }
