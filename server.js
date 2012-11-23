@@ -30,11 +30,11 @@ module.exports = function(options) {
   /**
    * Fetches the url provided passing along all the oauth params.
    * @param  {string}   url              URL to fetch
-   * @param  {Function} callback         Function to call when all data has been completed. Takes error, data
    * @param  {[type]}   oauthToken       Oauth token provided by twitter.
    * @param  {[type]}   oauthTokenSecret Oauth secret provided by twitter.
+   * @param  {Function} callback         Function to call when all data has been completed. Takes error, data
    */
-self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
+self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
   var self = this;
   var get = function(url, oauthToken, oauthTokenSecret, callback) {
     self.consumer.get(url, oauthToken, oauthTokenSecret, function (error, data, response) {
@@ -90,12 +90,12 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
    *
    * docs: https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
    *
-   * @param  {Function} callback         Called with the mentions. (error, data)
    * @param  {String}   oauthToken       oauth token provided by twitter.
    * @param  {String}   oauthTokenSecret oauth secret provided by twitter.
    * @param  {String}   sinceId only get tweets after this retweet.
+   * @param  {Function} callback         Called with the mentions. (error, data)
    */
-  self.retweets = function(callback, oauthToken, oauthTokenSecret, sinceId) {
+  self.retweets = function(oauthToken, oauthTokenSecret, sinceId, callback) {
     var processData = function(error, data, limit) {
       callback(error, {
         limit: limit,
@@ -103,7 +103,7 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
       });
     };
     var q = (sinceId && sinceId!='false') ? '?since_id='+sinceId : '';
-    self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q, callback, oauthToken, oauthTokenSecret);
+    self.fetch('https://api.twitter.com/1.1/statuses/mentions_timeline.json'+q, oauthToken, oauthTokenSecret, callback);
   };
 
   /**
@@ -111,18 +111,18 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
    *
    * docs: https://dev.twitter.com/docs/api/1.1/get/users/lookup
    *
-   * @param  {Function} callback         Called with the mentions. (error, data)
    * @param  {String}   oauthToken       oauth token provided by twitter.
    * @param  {String}   oauthTokenSecret oauth secret provided by twitter.
+   * @param  {Function} callback         Called with the mentions. (error, data)
    */
-  self.user = function(handle, callback, oauthToken, oauthTokenSecret) {
+  self.user = function(handle, oauthToken, oauthTokenSecret, callback) {
     var processData = function(error, data, limit) {
       callback(error, {
         limit: limit,
         user: data
       });
     };
-    self.fetch('https://api.twitter.com/1.1/users/lookup.json', processData, oauthToken, oauthTokenSecret);
+    self.fetch('https://api.twitter.com/1.1/users/lookup.json?screen_name='+handle, oauthToken, oauthTokenSecret, processData);
   };
 
 
@@ -131,30 +131,28 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
    *
    * docs: https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
    *
-   * @param  {Function} callback         Called with the mentions. (error, data)
    * @param  {String}   oauthToken       oauth token provided by twitter.
    * @param  {String}   oauthTokenSecret oauth secret provided by twitter.
+   * @param  {Function} callback         Called with the mentions. (error, data)
    */
-  self.verify = function(callback, oauthToken, oauthTokenSecret) {
+  self.verify = function(oauthToken, oauthTokenSecret, callback) {
     var processData = function(error, data, limit) {
       callback(error, {
         limit: limit,
         user: data
       });
     };
-    self.fetch('https://api.twitter.com/1.1/account/verify_credentials.json', processData, oauthToken, oauthTokenSecret);
+    self.fetch('https://api.twitter.com/1.1/account/verify_credentials.json', oauthToken, oauthTokenSecret, processData);
   };
-
-
 
   /**
    * Search tweets
    * @param  {String}   term             Search term
-   * @param  {Function} callback         Called  once complete (error, data)
    * @param  {[type]}   oauthToken       oauth token provided by twitter.
    * @param  {[type]}   oauthTokenSecret [oauth token provided by secret.
+   * @param  {Function} callback         Called  once complete (error, data)
    */
-  self.search = function(term, callback, oauthToken, oauthTokenSecret) {
+  self.search = function(term, oauthToken, oauthTokenSecret, callback) {
     self.processData = function(error, data, limit) {
       if(error) {
         callback(error, null);
@@ -185,17 +183,18 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
         callback(null, null);
       }
     };
-    self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURI(term)+'', processData, oauthToken, oauthTokenSecret);
+    self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURI(term)+'', oauthToken, oauthTokenSecret, processData);
   };
-
-
 
   /*
     Search with no auth.
+      Probably shouldn't be in here but what the heck.
+
    */
   self.freeSearch = function(search, callback) {
     request('http://search.twitter.com/search.json?q='+search, callback);
   };
+
   // oauth routes.
   //
   // Come on - you know this one.
@@ -247,7 +246,7 @@ self.fetch =  function(url, callback, oauthToken, oauthTokenSecret) {
   };
 
   /**
-   * First attempt at writing middleware - use with great caution.
+   * First attempt at writing middleware - use with great caution. Actually, prob best not to use it.
    */
   self.middleware = function(req, res, next) {
     if(!req.session.oauthAccessToken && !req.session.oauthRequestTokenSecret) { // not idea
