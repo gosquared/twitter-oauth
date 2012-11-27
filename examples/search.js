@@ -5,9 +5,9 @@ var http = require('http');
 var path = require('path');
 
 var config = {
-        consumerKey: "sJaEIiV4X014iIC6uvzKDA", /* per appications - manage apps here: https://dev.twitter.com/apps */
-     consumerSecret: "40wRAIu9a9bgAKWWltTP7NutSZxEMsPZJ5UhTZitmgw", /* per appications - manage apps here: https://dev.twitter.com/apps */
-             domain: "http://172.16.0.14:83",
+        consumerKey: "ENTER KEY HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
+     consumerSecret: "ENTER SECRET HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
+             domain: "domain",
               login: "/twitter/sessions/connect",
              logout: "/twitter/sessions/logout",
       loginCallback: "/twitter/sessions/callback",  /* internal */
@@ -33,29 +33,24 @@ app.get('/', function(req, res){
 });
 
 app.get('/search/:term', function(req, res){
-  twitterAuth.search(req.params.term.split('|'), function(error, data) {
+  twitterAuth.search(req.params.term.split('|'),  req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function(error, data) {
     res.json(data);
-  }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
-
-  console.log(req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
+  });
 });
 
 app.get('/mentions', function(req, res){
-twitterAuth.retweets(function(error, data) {
+twitterAuth.retweets(req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function(error, data) {
     res.json(data);
-  }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
+  });
 });
 
 app.get('/user/:handle', function(req, res){
-
-  twitterAuth.user(req.params.handle, function(error, data) {
+  twitterAuth.user(req.params.handle,  req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function(error, data) {
     res.json({
       error: error,
       data: data
     });
-
-
-  }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
+  });
 });
 
 app.get(config.login, twitterAuth.oauthConnect);

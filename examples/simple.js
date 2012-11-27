@@ -8,7 +8,7 @@ var express = require('express');
 var config = {
         consumerKey: "CONSUMER KEYS", /* per appications - manage apps here: https://dev.twitter.com/apps */
      consumerSecret: "CONSUMER SECRET", /* per appications - manage apps here: https://dev.twitter.com/apps */
-             domain: "http://172.16.0.14:83",
+             domain: "http://DOMAIN.com",
               login: "/twitter/sessions/connect",
              logout: "/twitter/sessions/logout",
       loginCallback: "/twitter/sessions/callback",  /* internal */
@@ -34,9 +34,9 @@ app.get('/', function(req, res){
 
 
 app.get('/search/:term', twitterAuth.middleware, function(req, res){
-  twitterAuth.search(req.params.term, function(error, data) {
+  twitterAuth.search(req.params.term, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function(error, data) {
     res.json(data);
-  }, req.session.oauthAccessToken, req.session.oauthAccessTokenSecret);
+  });
 });
 
 app.get(config.login, twitterAuth.oauthConnect);
