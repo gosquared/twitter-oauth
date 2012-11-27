@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:gosquared/twitter-auth.git"
+    "url": "git@github.com:gosquared/twitter-auth.git"
   },
   "dependencies": {
     "oauth": "~0.9.7"

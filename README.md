@@ -3,7 +3,7 @@
 A simple API to work with twitters new (1.1) API. through oAuth with Express.js and Node.js.
 
 
-Requests are cached in Redis for 60 seconds  to avoid rate limits. If
+Requests are cached in Redis for 60 seconds to avoid rate limits if you provide connection details.
 
 
 ##Installation:
@@ -70,5 +70,5 @@ Twitter recently announced some changes to its API which resulted in us having t
 
 While the version number only went from 1 to 1.1 it actually contained some big changes.
 
-To ensure our social offering was ready for twitter turning off its 1.0 API we
+To ensure our social offering was ready for twitter turning off its 1.0 API we build this library.
 
