@@ -46,22 +46,9 @@ Then you can call the service like so:
   });
 ```
 
-
-##Queries:
-
-```
-app.get('/search/:term', function(req, res){
-  twitterAuth.search(req.params.term.split('|'),  req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function(error, data) {
-    res.json(data);
-  });
-});
-```
-
 See the search example to see all the possible searches.
 
-
 Twitter 1.1
-
 
 Twitter recently announced some changes to its API which resulted in us having to make some changes to our backend social service.
 
