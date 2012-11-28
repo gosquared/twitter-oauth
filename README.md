@@ -49,18 +49,15 @@ Then you can call the service like so:
 
 ##Queries:
 
+```
+app.get('/search/:term', function(req, res){
+  twitterAuth.search(req.params.term.split('|'),  req.session.oauthAccessToken, req.session.oauthAccessTokenSecret, function(error, data) {
+    res.json(data);
+  });
+});
+```
 
 See the search example to see all the possible searches.
-
-
-##TODO
-
-1. Add middleware
-2. Expose redis functionality securely
-
-
-
-
 
 
 Twitter 1.1
