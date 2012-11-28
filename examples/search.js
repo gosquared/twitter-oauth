@@ -5,20 +5,20 @@ var http = require('http');
 var path = require('path');
 
 var config = {
-        consumerKey: "ENTER KEY HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
-     consumerSecret: "ENTER SECRET HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
-             domain: "domain",
+        consumerKey: "sJaEIiV4X014iIC6uvzKDA", /* per appications - manage apps here: https://dev.twitter.com/apps */
+     consumerSecret: "40wRAIu9a9bgAKWWltTP7NutSZxEMsPZJ5UhTZitmgw", /* per appications - manage apps here: https://dev.twitter.com/apps */
+             domain: "http://YOURDOMAIN.com",
               login: "/twitter/sessions/connect",
              logout: "/twitter/sessions/logout",
       loginCallback: "/twitter/sessions/callback",  /* internal */
-   completeCallback: "/search/gosquared"  /* When oauth has finished - where should we take the user too */
+   completeCallback: "http://YOURDOMAIN.com/search/gosquared"  /* When oauth has finished - where should we take the user too */
 };
 
 var express = require('express');
 twitterAuth = require('../server.js')(config);
 
 
-var app = express.createServer();
+var app = express();
 
 app.configure(function(){
   app.set('port', 83);

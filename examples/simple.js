@@ -6,8 +6,8 @@ var express = require('express');
 
 
 var config = {
-        consumerKey: "CONSUMER KEYS", /* per appications - manage apps here: https://dev.twitter.com/apps */
-     consumerSecret: "CONSUMER SECRET", /* per appications - manage apps here: https://dev.twitter.com/apps */
+        consumerKey: "YOUR CONSUMER KEY HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
+     consumerSecret: "YOUR CONSUMER SECRET HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
              domain: "http://DOMAIN.com",
               login: "/twitter/sessions/connect",
              logout: "/twitter/sessions/logout",
@@ -15,9 +15,9 @@ var config = {
    completeCallback: "/search/gosquared"  /* When oauth has finished - where should we take the user too */
 };
 
-twitterAuth = require('../app.js')(config);
+twitterAuth = require('../server.js')(config);
 
-var app = express.createServer();
+var app = express();
 
 app.configure(function(){
   app.set('port', 83);

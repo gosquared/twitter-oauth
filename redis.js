@@ -1,8 +1,7 @@
 
 /*
 
-Small redis wrapper, not really needed anymore.
- */
+Small redis wrapper, not really needed anymore but might come in handy if anyone wants to override the default data store (redis) */
 
 module.exports = function(host, port) {
   var redis = require('redis');

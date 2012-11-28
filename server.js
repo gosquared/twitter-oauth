@@ -220,15 +220,27 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         req.session.oauthRequestToken = oauthToken; // we will need these values in the oauthCallback so store them on the session.
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
 
+       var connectCallback = function(req, res, next) { // keep track of the site id in the sesion for the callback.
+        console.log('concb');
+          req.session.siteId = req.params.siteId;
+          req.session.apiKey = req.params.apiKey;
+          req.session.siteToken = req.params.siteToken;
+       }
+
         if(options.connectCallback) {
           options.connectCallback(req, res, next);
+        }else {
+
+          connectCallback(req, res, next);
         }
+        console.log('DO REDIRECT');
         res.redirect("https://twitter.com/oauth/authorize?oauth_token="+req.session.oauthRequestToken);
       }
     });
   };
 
   self.oauthCallback = function(req, res, next) {
+    console.log('wotcha');
     self.consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
       if (error) {
         res.send("Access Denied." , 500);
@@ -237,8 +249,10 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         req.session.oauthAccessToken = oauthAccessToken; // ensure we are clearing the session variables.
         req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
         if(options.oauthCallbackCallback) {
+          console.log(1);
           options.oauthCallbackCallback(req, res, next, results.screen_name, oauthAccessToken, oauthAccessTokenSecret);
         }else {
+          console.log(2);
           res.redirect(options.completeCallback);
         }
       }

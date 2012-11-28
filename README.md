@@ -24,6 +24,8 @@ var twitterAuth = require('twitter-oauth')({
 });
 ```
 
+See examples for more details.
+
 
 If a redis port and host are provided then each request will be cached for 60 seconds.
 
@@ -51,16 +53,6 @@ Then you can call the service like so:
 
 
 See the search example to see all the possible searches.
-
-
-##TODO
-
-1. Add middleware
-2. Expose redis functionality securely
-
-
-
-
 
 
 Twitter 1.1
