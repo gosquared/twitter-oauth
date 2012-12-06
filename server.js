@@ -165,7 +165,7 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
           timestamp: tweet.created_at,
           username: tweet.user.screen_name,
           id: tweet.id,
-          url: 'https://twitter.com/' + tweet.from_user + '/status/' + tweet.id_str
+          url: 'https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str
         };
       };
       var tweets = data.statuses;
