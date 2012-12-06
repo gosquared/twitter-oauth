@@ -208,7 +208,7 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
   // Used to connect using oauth.
   self.oauthConnect = function(req, res, next) {
     var referer = req.header('Referer');
-    if(referer && req.session){
+    if(referer){
       req.session.originalUrl = referer; // stored so we can return them to here later.
     }
     self.consumer.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
@@ -216,7 +216,6 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         res.send("Error getting OAuth request token : ", 500);
         console.log('oAuth error: '+ error);
       } else {
-        console.log(oauthToken);
         req.session.oauthRequestToken = oauthToken; // we will need these values in the oauthCallback so store them on the session.
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
 
