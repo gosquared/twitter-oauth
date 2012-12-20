@@ -221,16 +221,14 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
 
        var connectCallback = function(req, res, next) { // keep track of the site id in the sesion for the callback.
-        console.log('concb');
           req.session.siteId = req.params.siteId;
           req.session.apiKey = req.params.apiKey;
           req.session.siteToken = req.params.siteToken;
-       }
+       };
 
         if(options.connectCallback) {
           options.connectCallback(req, res, next);
         }else {
-
           connectCallback(req, res, next);
         }
         console.log('DO REDIRECT');
