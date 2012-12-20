@@ -165,7 +165,8 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
           timestamp: tweet.created_at,
           username: tweet.user.screen_name,
           id: tweet.id,
-          url: 'https://twitter.com/' + tweet.from_user + '/status/' + tweet.id_str
+          entities: tweet.entities,
+          url: 'https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str
         };
       };
       var tweets = data.statuses;
@@ -183,7 +184,7 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         callback(null, null);
       }
     };
-    self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURI(term)+'', oauthToken, oauthTokenSecret, processData);
+    self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURI(term)+'&include_entities=true', oauthToken, oauthTokenSecret, processData);
   };
 
   /*
@@ -208,7 +209,7 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
   // Used to connect using oauth.
   self.oauthConnect = function(req, res, next) {
     var referer = req.header('Referer');
-    if(referer && req.session){
+    if(referer){
       req.session.originalUrl = referer; // stored so we can return them to here later.
     }
     self.consumer.getOAuthRequestToken(function(error, oauthToken, oauthTokenSecret, results){
@@ -216,7 +217,6 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         res.send("Error getting OAuth request token : ", 500);
         console.log('oAuth error: '+ error);
       } else {
-        console.log(oauthToken);
         req.session.oauthRequestToken = oauthToken; // we will need these values in the oauthCallback so store them on the session.
         req.session.oauthRequestTokenSecret = oauthTokenSecret;
 
