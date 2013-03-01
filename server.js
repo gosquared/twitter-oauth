@@ -184,7 +184,7 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         callback(null, null);
       }
     };
-    self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURI(term)+'&include_entities=true', oauthToken, oauthTokenSecret, processData);
+    self.fetch('https://api.twitter.com/1.1/search/tweets.json?q='+encodeURIComponent(term)+'&include_entities=true', oauthToken, oauthTokenSecret, processData);
   };
 
   /*
@@ -231,14 +231,12 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         }else {
           connectCallback(req, res, next);
         }
-        console.log('DO REDIRECT');
         res.redirect("https://twitter.com/oauth/authorize?oauth_token="+req.session.oauthRequestToken);
       }
     });
   };
 
   self.oauthCallback = function(req, res, next) {
-    console.log('wotcha');
     self.consumer.getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
       if (error) {
         res.send("Access Denied." , 500);
@@ -247,10 +245,8 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
         req.session.oauthAccessToken = oauthAccessToken; // ensure we are clearing the session variables.
         req.session.oauthAccessTokenSecret = oauthAccessTokenSecret;
         if(options.oauthCallbackCallback) {
-          console.log(1);
           options.oauthCallbackCallback(req, res, next, results.screen_name, oauthAccessToken, oauthAccessTokenSecret);
         }else {
-          console.log(2);
           res.redirect(options.completeCallback);
         }
       }
