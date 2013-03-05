@@ -5,8 +5,8 @@ var http = require('http');
 var path = require('path');
 
 var config = {
-        consumerKey: "sJaEIiV4X014iIC6uvzKDA", /* per appications - manage apps here: https://dev.twitter.com/apps */
-     consumerSecret: "40wRAIu9a9bgAKWWltTP7NutSZxEMsPZJ5UhTZitmgw", /* per appications - manage apps here: https://dev.twitter.com/apps */
+        consumerKey: "YOUR CONSUMER KEY HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
+     consumerSecret: "YOUR CONSUMER SECRET HERE", /* per appications - manage apps here: https://dev.twitter.com/apps */
              domain: "http://YOURDOMAIN.com",
               login: "/twitter/sessions/connect",
              logout: "/twitter/sessions/logout",
