@@ -202,8 +202,9 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
   self.logout = function(req, res, next) {
     req.session.oauthAccessToken = null;
     req.session.oauthAccessTokenSecret = null;
-    req.session.destroy();
-    res.json({'logout': 'ok'});
+    req.session.destroy(function(err) {
+      res.json({'logout': (err ? 'ko' : 'ok')});
+    });
   };
 
   // Used to connect using oauth.
