@@ -2,15 +2,12 @@
   "author": "Simon McManus <simon@gosquared.com>",
   "name": "twitter-oauth",
   "main": "server.js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "repository": {
     "type": "git",
     "url": "git@github.com:gosquared/twitter-oauth.git"
   },
   "dependencies": {
     "oauth": "~0.9.7"
-  },
-  "engines": {
-    "node": "0.8.9"
   }
 }
