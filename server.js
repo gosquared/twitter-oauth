@@ -107,6 +107,27 @@ self.fetch =  function(url, oauthToken, oauthTokenSecret, callback) {
   };
 
   /**
+   * Returns favorites twits for the logged in user.
+   *
+   * docs: https://dev.twitter.com/docs/api/1.1/favorites/list.json
+   *
+   * @param  {String}   oauthToken       oauth token provided by twitter.
+   * @param  {String}   oauthTokenSecret oauth secret provided by twitter.
+   * @param  {String}   sinceId only get tweets after this retweet.
+   * @param  {Function} callback         Called with the mentions. (error, data)
+   */
+  self.favorites = function(oauthToken, oauthTokenSecret, sinceId, callback) {
+    var processData = function(error, data, limit) {
+      callback(error, {
+        limit: limit,
+        tweets: data
+      });
+    };
+    var q = (sinceId && sinceId!='false') ? '?since_id='+sinceId : '';
+    self.fetch('https://api.twitter.com/1.1/favorites/list.json'+q, oauthToken, oauthTokenSecret, callback);
+  };
+
+  /**
    * Returns info about the user specified by the handle.
    *
    * docs: https://dev.twitter.com/docs/api/1.1/get/users/lookup
